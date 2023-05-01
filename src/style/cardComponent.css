@@ -1,0 +1,13 @@
+.buttonPrimary {
+  width: 10%;
+  background-color: #605e5e;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  color: white;
+  border: none;
+}
+
+.buttonPrimary:hover {
+  background-color: #2b2b2b;
+  color: white;
+}
