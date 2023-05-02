@@ -3,6 +3,7 @@ import HeaderComponent from './components/HeaderComponent';
 import CardComponent from './components/CardComponent';
 import React, {useState} from 'react';
 import {Iactivity} from './interfaces/activity';
+import Axios from 'axios';
 
 function currentDate() {
   let newDate = new Date();
@@ -34,73 +35,24 @@ function App(): React.ReactElement {
     height: '100vh',
     display: 'flex',
   };
-
+  let [objectActivity, setObjectActivity] = useState([]);
   let [date, setDate] = useState(currentDate());
-  let objectSubsti: any[] = [];
-  let objectActivity: Array<Iactivity> = [
-    {
-      id: 0,
-      title: 'Teste00',
-      date: '01/05/2023',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod excepturi, eveniet fuga soluta nam ipsum molestias perferendis voluptas vero iste alias debitis quis adipisci facere nobis, doloribus dolorem incidunt consequatur.',
-    },
-    {
-      id: 1,
-      title: 'Teste01',
-      date: '02/05/2023',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod excepturi, eveniet fuga soluta nam ipsum molestias perferendis voluptas vero iste alias debitis quis adipisci facere nobis, doloribus dolorem incidunt consequatur.',
-    },
-    {
-      id: 2,
-      title: 'Teste02',
-      date: '02/05/2023',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod excepturi, eveniet fuga soluta nam ipsum molestias perferendis voluptas vero iste alias debitis quis adipisci facere nobis, doloribus dolorem incidunt consequatur.',
-    },
-    {
-      id: 3,
-      title: 'Teste03',
-      date: '02/05/2023',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod excepturi, eveniet fuga soluta nam ipsum molestias perferendis voluptas vero iste alias debitis quis adipisci facere nobis, doloribus dolorem incidunt consequatur.',
-    },
-    {
-      id: 4,
-      title: 'Teste04',
-      date: '02/05/2023',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod excepturi, eveniet fuga soluta nam ipsum molestias perferendis voluptas vero iste alias debitis quis adipisci facere nobis, doloribus dolorem incidunt consequatur.',
-    },
-    {
-      id: 5,
-      title: 'Teste05',
-      date: '02/05/2023',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod excepturi, eveniet fuga soluta nam ipsum molestias perferendis voluptas vero iste alias debitis quis adipisci facere nobis, doloribus dolorem incidunt consequatur.',
-    },
-    {
-      id: 6,
-      title: 'Teste06',
-      date: '02/05/2023',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod excepturi, eveniet fuga soluta nam ipsum molestias perferendis voluptas vero iste alias debitis quis adipisci facere nobis, doloribus dolorem incidunt consequatur.',
-    },
-    {
-      id: 7,
-      title: 'Teste07',
-      date: '20/04/2023',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod excepturi, eveniet fuga soluta nam ipsum molestias perferendis voluptas vero iste alias debitis quis adipisci facere nobis, doloribus dolorem incidunt consequatur.',
-    },
-    {
-      id: 8,
-      title: 'Teste08',
-      date: '30/04/2023',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod excepturi, eveniet fuga soluta nam ipsum molestias perferendis voluptas vero iste alias debitis quis adipisci facere nobis, doloribus dolorem incidunt consequatur.',
-    },
-  ];
 
-  if (date) {
-    objectSubsti = objectActivity.filter((e: Iactivity) => {
-      return date === e.date;
-    });
-  }
+  const getAllActivities = async () => {
+    const response = await Axios.get('http://localhost:8080/activity');
 
-  console.log(date);
+    const data = response.data;
+
+    setObjectActivity(data.activity);
+  };
+
+  React.useEffect(function () {
+    getAllActivities();
+  }, []);
+
+  let objectSubsti = objectActivity.filter((e: Iactivity) => {
+    return date === e.DATE;
+  });
 
   return (
     <>
@@ -117,21 +69,21 @@ function App(): React.ReactElement {
             {objectSubsti
               ? objectSubsti.map((element: Iactivity) => (
                   <CardComponent
-                    key={element.id}
-                    id={element.id}
-                    title={element.title}
-                    date={element.date}
-                    description={element.description}
+                    key={element.ID}
+                    ID={element.ID}
+                    TITLE={element.TITLE}
+                    DATE={element.DATE}
+                    DESCRIPTION={element.DESCRIPTION}
                   />
                 ))
               : objectActivity.length > 0 &&
                 objectActivity.map((element: Iactivity) => (
                   <CardComponent
-                    key={element.id}
-                    id={element.id}
-                    title={element.title}
-                    date={element.date}
-                    description={element.description}
+                    key={element.ID}
+                    ID={element.ID}
+                    TITLE={element.TITLE}
+                    DATE={element.DATE}
+                    DESCRIPTION={element.DESCRIPTION}
                   />
                 ))}
           </div>

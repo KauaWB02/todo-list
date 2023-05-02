@@ -1,13 +1,21 @@
 import * as React from 'react';
+import Axios from 'axios';
 import '../style/headerComponent.css';
-
-function dateFormat(date: string) {}
 
 export default function ModalComponent(): React.ReactElement {
   let [date, setDate] = React.useState('');
   let [title, setTitle] = React.useState('');
   let [description, setDescription] = React.useState('');
-  let teste: string = '';
+
+  const createActivity = async () => {
+    const bodyJson = {
+      title: title,
+      date: date,
+      description: description,
+    }
+
+    await Axios.post('http://localhost:8080/activity',bodyJson);
+  };
 
   return (
     <>
@@ -45,13 +53,7 @@ export default function ModalComponent(): React.ReactElement {
                     type='date'
                     className='form-control'
                     id='date'
-                    onChange={(e) => {
-                      let dateArray = e.target.value.split('-');
-
-                      let dateFormat = `${dateArray[2]}/${dateArray[1]}/${dateArray[0]}`;
-
-                      setDate(dateFormat);
-                    }}
+                    onChange={(e) => setDate(e.target.value)}
                     required
                   />
                 </div>
@@ -87,8 +89,7 @@ export default function ModalComponent(): React.ReactElement {
                     required></textarea>
                 </div>
                 <div className='mb-3'>
-                  <button
-                    type='submit'
+                  <button onClick={createActivity}
                     className='btn btn-success'>
                     Criar
                   </button>

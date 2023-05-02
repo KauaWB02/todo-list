@@ -1,6 +1,6 @@
 export interface Iactivity {
-  id: string | number;
-  title: string;
-  date: string;
-  description: string;
+  ID: string | number;
+  TITLE: string;
+  DATE: string;
+  DESCRIPTION: string;
 }

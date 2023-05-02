@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 export default function SearchComponent(props: any): React.ReactElement {
-  let {date, setDate} = props;
+  let {setDate} = props;
   return (
     <>
       <input
@@ -11,7 +11,7 @@ export default function SearchComponent(props: any): React.ReactElement {
         onChange={(e) => {
           let arrayDate = e.target.value.split('-');
 
-          let dateFormat = `${arrayDate[2]}/${arrayDate[1]}/${arrayDate[0]}`
+          let dateFormat = `${arrayDate[2]}/${arrayDate[1]}/${arrayDate[0]}`;
 
           setDate(dateFormat);
         }}
