@@ -41,15 +41,15 @@ function App(): React.ReactElement {
   const getAllActivities = async () => {
     const response = await Axios.get('http://localhost:8080/activity');
 
-    const data = response.data;
-
-    setObjectActivity(data.activity);
+    const activities = response.data.activity;
+  
+    setObjectActivity(activities);
   };
-
+  
   React.useEffect(function () {
-    getAllActivities();
+    getAllActivities()
   }, []);
-
+  
   let objectSubsti = objectActivity.filter((e: Iactivity) => {
     return date === e.DATE;
   });
