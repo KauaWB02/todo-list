@@ -1,4 +1,4 @@
-const {getActivities, createActivity} = require('../models/activityModel');
+const {getActivities, createActivity, deleteActivity, getActivitiesById, updateActivity} = require('../models/activityModel');
 
 async function getAll(req, res) {
   let retorno = {
@@ -9,6 +9,8 @@ async function getAll(req, res) {
 
   try {
     let activity = await getActivities();
+
+    if (activity.length <= 0) throw {message: 'Não existe atividades para esse usuário, Crie uma atividade', status: 500};
 
     retorno.message = 'Todas as atividades do usuário';
     retorno.activity = activity;
@@ -23,20 +25,20 @@ async function getAll(req, res) {
 async function getById(req, res) {
   let retorno = {
     message: null,
-    produtos: null,
     status: 200,
   };
 
   try {
+    const id = req.params.idActivity;
+    let activity = await getActivitiesById(id);
+
+    if (activity.length <= 0) throw {message: 'Atividade não encontrada, Favor verificar informações!', status: 500};
+
+    retorno.message = 'Atividade encontrada.';
+    retorno.activity = activity[0];
   } catch (error) {
-    if (error.sqlMessage) {
-      retorno.message = `Erro critico!, caso o erro persista entre em contato com administrador!`;
-      retorno.status = 500;
-    } else {
-      retorno.message = `${error.message}`;
-      retorno.status = error.status;
-    }
-    console.log(error);
+    retorno.message = `${error.message}`;
+    retorno.status = error.status;
   } finally {
     res.status(retorno.status).send(retorno);
   }
@@ -51,9 +53,9 @@ async function create(req, res) {
 
   try {
     let {title, description, date} = req.body;
-    let [activity] = await createActivity(title, description, date);
+    let activity = await createActivity(title, description, date);
 
-    if(activity.affectedRows > 0){
+    if (activity.affectedRows > 0) {
       retorno.message = 'Atividade criada com sucesso!';
       retorno.activity = req.body;
     }
@@ -66,8 +68,59 @@ async function create(req, res) {
   }
 }
 
+async function deleteAc(req, res) {
+  let retorno = {
+    message: null,
+    status: 200,
+  };
+
+  try {
+    let id = req.params.idActivity;
+    let activity = await deleteActivity(id);
+
+    if (activity.affectedRows <= 0) {
+      throw {
+        message: 'Atividade não encontrada, favor verificar dados informados!',
+        status: 500,
+      };
+    }
+    retorno.message = 'Atividade excluida com sucesso!';
+  } catch (error) {
+    retorno.message = `${error.message}`;
+    retorno.status = error.status;
+  } finally {
+    res.status(retorno.status).send(retorno);
+  }
+}
+
 async function update(req, res) {
-  res.status(200).send('Atualização');
+  let retorno = {
+    message: null,
+    status: 200,
+  };
+
+  try {
+    const id = req.params.idActivity;
+    const {TITLE, DESCRIPTION, DATE, ISDONE} = req.body;
+    let activity = await getActivitiesById(id);
+
+    if (activity.length <= 0) throw {message: 'Atividade não encontrada, Favor verificar informações!', status: 500};
+
+    let activityObject = activity[0];
+    activityObject.TITLE = TITLE || activityObject.TITLE;
+    activityObject.DESCRIPTION = DESCRIPTION ||  activityObject.DESCRIPTION;
+    activityObject.DATE = DATE || activityObject.DATE;
+    activityObject.ISDONE = ISDONE || activityObject.ISDONE;
+
+    let teste = await updateActivity(id, activityObject.TITLE, activityObject.DESCRIPTION, activityObject.DATE, activityObject.ISDONE);
+
+    console.log(teste)
+  } catch (error) {
+    retorno.message = `${error.message}`;
+    retorno.status = error.status;
+  } finally {
+    res.status(retorno.status).send(retorno);
+  }
 }
 
 module.exports = {
@@ -75,4 +128,5 @@ module.exports = {
   getById,
   create,
   update,
+  deleteAc,
 };
