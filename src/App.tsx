@@ -30,6 +30,14 @@ function currentDate() {
   return dateActivities;
 }
 
+async function getAllActivities() {
+  const response = await Axios.get('http://localhost:8080/activity');
+
+  const activities = response.data.activity;
+
+  return activities;
+}
+
 function App(): React.ReactElement {
   const styleContainer: object = {
     height: '100vh',
@@ -38,18 +46,14 @@ function App(): React.ReactElement {
   let [objectActivity, setObjectActivity] = useState([]);
   let [date, setDate] = useState(currentDate());
 
-  const getAllActivities = async () => {
-    const response = await Axios.get('http://localhost:8080/activity');
-
-    const activities = response.data.activity;
-  
-    setObjectActivity(activities);
+  const allActivities = async () => {
+    setObjectActivity(await getAllActivities());
   };
-  
+
   React.useEffect(function () {
-    getAllActivities()
+    allActivities();
   }, []);
-  
+
   let objectSubsti = objectActivity.filter((e: Iactivity) => {
     return date === e.DATE;
   });
