@@ -3,7 +3,7 @@ CREATE TABLE `activity` (
   `TITLE` varchar(255) NOT NULL,
   `DESCRIPTION` varchar(255) NOT NULL,
   `DATE` date NOT NULL DEFAULT curdate(),
-  `isDONE` tinyint(1) NOT NULL DEFAULT 0,
+  `IS_COMPLETE` tinyint(1) NOT NULL DEFAULT 0,
   `CREATED_AT` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;insert into `activity` (`CREATED_AT`, `DATE`, `DESCRIPTION`, `TITLE`, `id`, `isDONE`) values ('2023-05-01 15:44:56', '2023-05-04', '2323', '2323', 2, 0);

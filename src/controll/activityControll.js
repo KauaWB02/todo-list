@@ -1,4 +1,4 @@
-const {getActivities, createActivity, deleteActivity, getActivitiesById, updateActivity} = require('../models/activityModel');
+const {getActivities, createActivity, deleteActivity, getActivitiesById, updateActivity, updateActivityCompleted} = require('../models/activityModel');
 
 async function getAll(req, res) {
   let retorno = {
@@ -101,21 +101,51 @@ async function update(req, res) {
 
   try {
     const id = req.params.idActivity;
-    const {TITLE, DESCRIPTION, DATE, ISDONE} = req.body;
+    const {TITLE, DESCRIPTION, DATE} = req.body;
     let activity = await getActivitiesById(id);
 
     if (activity.length <= 0) throw {message: 'Atividade não encontrada, Favor verificar informações!', status: 500};
 
     let activityObject = activity[0];
     activityObject.TITLE = TITLE || activityObject.TITLE;
-    activityObject.DESCRIPTION = DESCRIPTION ||  activityObject.DESCRIPTION;
+    activityObject.DESCRIPTION = DESCRIPTION || activityObject.DESCRIPTION;
     activityObject.DATE = DATE || activityObject.DATE;
-    activityObject.ISDONE = ISDONE || activityObject.ISDONE;
 
-    let teste = await updateActivity(id, activityObject.TITLE, activityObject.DESCRIPTION, activityObject.DATE, activityObject.ISDONE);
+    let updatedActivity = await updateActivity(id, activityObject.TITLE, activityObject.DESCRIPTION, activityObject.DATE);
 
-    console.log(teste)
+    if (updatedActivity.affectedRows === 1) {
+      retorno.message = 'Atividade atualizada com sucesso!';
+      retorno.activity = activityObject;
+    }
   } catch (error) {
+    retorno.message = `${error.message}`;
+    retorno.status = error.status;
+  } finally {
+    res.status(retorno.status).send(retorno);
+  }
+}
+
+async function activityCompleted(req, res) {
+  let retorno = {
+    message: null,
+    status: 200,
+  };
+
+  try {
+    const id = req.params.idActivity;
+    const isComplete = req.query.isComplete;
+
+    let activityComplete = await updateActivityCompleted(isComplete, id);
+
+    if (activityComplete.affectedRows <= 0) {
+      throw {
+        message: 'Atividade não encontrada, favor verificar dados informados!',
+        status: 500,
+      };
+    }
+    retorno.message = 'Atividade completa!';
+  } catch (error) {
+    console.log(error);
     retorno.message = `${error.message}`;
     retorno.status = error.status;
   } finally {
@@ -129,4 +159,5 @@ module.exports = {
   create,
   update,
   deleteAc,
+  activityCompleted,
 };
